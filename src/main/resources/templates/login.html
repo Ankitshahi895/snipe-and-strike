@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Snipe & Strike - Login</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        :root {
+            --primary-color: #2a2e3a;
+            --secondary-color: #4a5568;
+            --accent-color: #e53e3e;
+            --text-color: #f7fafc;
+            --highlight-color: #f6ad55;
+        }
+
+        body {
+            background: url('https://images.unsplash.com/photo-1542751371-adc38448a05e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'Orbitron', 'Arial', sans-serif;
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: -1;
+        }
+
+        form {
+            background: rgba(42, 46, 58, 0.9);
+            padding: 2.5rem;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(229, 62, 62, 0.5);
+            width: 350px;
+            transform-style: preserve-3d;
+            transition: all 0.3s ease;
+            border: 1px solid var(--accent-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        form:hover {
+            box-shadow: 0 0 30px rgba(229, 62, 62, 0.8);
+            transform: translateY(-5px);
+        }
+
+        form::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                transparent 45%,
+                rgba(229, 62, 62, 0.1) 50%,
+                transparent 55%
+            );
+            transform: rotate(30deg);
+            animation: scan 6s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes scan {
+            0% { transform: translateY(-100%) rotate(30deg); }
+            100% { transform: translateY(100%) rotate(30deg); }
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--highlight-color);
+            margin-bottom: 1.5rem;
+            font-size: 2.2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(246, 173, 85, 0.7);
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--accent-color);
+            text-shadow: 0 0 15px rgba(229, 62, 62, 0.8);
+            letter-spacing: 3px;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(74, 85, 104, 0.5);
+            border: 1px solid var(--secondary-color);
+            border-radius: 4px;
+            color: var(--text-color);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px rgba(229, 62, 62, 0.3);
+            background: rgba(74, 85, 104, 0.8);
+        }
+
+        input::placeholder {
+            color: rgba(247, 250, 252, 0.6);
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(to right, var(--accent-color), #c53030);
+            border: none;
+            border-radius: 4px;
+            color: white;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button:hover {
+            background: linear-gradient(to right, #c53030, var(--accent-color));
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(229, 62, 62, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -60%;
+            width: 200%;
+            height: 200%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(30deg);
+            transition: all 0.3s ease;
+        }
+
+        button:hover::after {
+            left: 100%;
+        }
+
+        .links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .links a {
+            color: var(--highlight-color);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .links a:hover {
+            color: var(--accent-color);
+            text-decoration: underline;
+        }
+
+        .error-message {
+            color: var(--accent-color);
+            text-align: center;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            text-shadow: 0 0 5px rgba(229, 62, 62, 0.5);
+        }
+
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(229, 62, 62, 0.6);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="particles" id="particles"></div>
+
+<form method="post" th:action="@{/login}">
+    <div class="logo">SNIPE & STRIKE</div>
+
+<!--    <div th:if="${param.error}" class="error-message">-->
+<!--        Invalid username or password. Mission failed!-->
+<!--    </div>-->
+
+    <div th:if="${param.error}">
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Access Denied',
+                text: 'Invalid username or password. Mission failed!',
+                background: '#2a2e3a',
+                color: '#f7fafc',
+                confirmButtonColor: '#e53e3e'
+            });
+        </script>
+    </div>
+
+
+    <div class="input-group">
+        <input type="text" name="username" placeholder="Agent ID" required
+               onfocus="this.placeholder = ''"
+               onblur="this.placeholder = 'Agent ID'"/>
+    </div>
+
+    <div class="input-group">
+        <input type="password" name="password" placeholder="Access Code" required
+               onfocus="this.placeholder = ''"
+               onblur="this.placeholder = 'Access Code'"/>
+    </div>
+
+    <button type="submit" id="loginBtn">AUTHENTICATE</button>
+
+    <div class="links">
+        Not an agent? <a th:href="@{/signup}">Register to Access Mission Control</a>
+    </div>
+</form>
+
+<script>
+    // Create particles
+    function createParticles() {
+        const particlesContainer = document.getElementById('particles');
+        const particleCount = 30;
+
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.classList.add('particle');
+
+            // Random properties
+            const size = Math.random() * 5 + 1;
+            const posX = Math.random() * window.innerWidth;
+            const posY = Math.random() * window.innerHeight;
+            const delay = Math.random() * 5;
+            const duration = Math.random() * 10 + 5;
+
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+            particle.style.left = `${posX}px`;
+            particle.style.top = `${posY}px`;
+            particle.style.opacity = Math.random() * 0.5 + 0.1;
+            particle.style.animation = `float ${duration}s ease-in-out ${delay}s infinite`;
+
+            particlesContainer.appendChild(particle);
+        }
+    }
+
+    // Add floating animation
+    const style = document.createElement('style');
+    style.innerHTML = `
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) translateX(0);
+                opacity: 0.6;
+            }
+            25% {
+                transform: translateY(-20px) translateX(10px);
+                opacity: 0.8;
+            }
+            50% {
+                transform: translateY(-40px) translateX(0);
+                opacity: 0.4;
+            }
+            75% {
+                transform: translateY(-20px) translateX(-10px);
+                opacity: 0.8;
+            }
+        }
+    `;
+    document.head.appendChild(style);
+
+    // Form submission effect
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+        const btn = document.getElementById('loginBtn');
+        btn.disabled = true;
+        btn.textContent = 'AUTHENTICATING...';
+        btn.style.background = 'linear-gradient(to right, #4a5568, #2a2e3a)';
+
+        // Simulate loading (remove this in production)
+        setTimeout(() => {
+            btn.textContent = 'ACCESS GRANTED';
+        }, 1500);
+    });
+
+    // Initialize particles when DOM is loaded
+    document.addEventListener('DOMContentLoaded', createParticles);
+
+    // Input focus effects
+    const inputs = document.querySelectorAll('input');
+    inputs.forEach(input => {
+        input.addEventListener('focus', function() {
+            this.parentNode.style.transform = 'scale(1.02)';
+        });
+
+        input.addEventListener('blur', function() {
+            this.parentNode.style.transform = 'scale(1)';
+        });
+    });
+</script>
+</body>
+</html>
